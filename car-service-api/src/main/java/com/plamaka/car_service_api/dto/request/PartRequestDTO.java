@@ -13,7 +13,7 @@ public class PartRequestDTO {
 	private double price;
 	
 	@PositiveOrZero
-	private int quantity;
+	private int quantityInStock;
 
 	public String getPartName() {
 		return partName;
@@ -31,11 +31,11 @@ public class PartRequestDTO {
 		this.price = price;
 	}
 
-	public int getQuantity() {
-		return quantity;
+	public int getQuantityInStock() {
+		return quantityInStock;
 	}
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
+	public void setQuantityInStock(int quantityInStock) {
+		this.quantityInStock = quantityInStock;
 	}
 }

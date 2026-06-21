@@ -35,7 +35,7 @@ CREATE TABLE service_records (
 CREATE TABLE parts (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     part_name VARCHAR(100) NOT NULL,
-    quantity INTEGER NOT NULL,
+    quantity_in_stock INTEGER NOT NULL,
     price DECIMAL(10,2) NOT NULL
 );
 

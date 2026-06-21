@@ -127,13 +127,20 @@ public class ServiceRecordService {
 			        null));
 			
 			
+			
 			serviceRecordPart.setPart(part);
 			serviceRecordPart.setServiceRecord(serviceRecord);
 			
-			if(part.getQuantity() < parts.getQuantity()) {
-			    throw new RuntimeException(
-			        "Not enough parts in stock");
+			if(parts.getQuantity() > part.getQuantityInStock()) {
+				throw new ErrorResponseException(HttpStatus.NOT_ACCEPTABLE,
+						ProblemDetail.forStatusAndDetail(
+				                HttpStatus.NOT_ACCEPTABLE,
+				                "Not enough parts: " + part.getPartName() + ". In stock: " + part.getQuantityInStock()
+				        ),
+				        null);
 			}
+			
+			
 			serviceRecordPart.setQuantity(parts.getQuantity());
 			
 			serviceRecordParts.add(serviceRecordPart);
@@ -196,7 +203,7 @@ public class ServiceRecordService {
 	    for (ServiceRecordPart oldPart : serviceRecord.getServiceRecordParts()) {
 	        Part part = oldPart.getPart();
 
-	        part.setQuantity(part.getQuantity() + oldPart.getQuantity());
+	        part.setQuantityInStock(part.getQuantityInStock() + oldPart.getQuantity());
 	        partRepository.save(part);
 	    }
 
@@ -214,8 +221,13 @@ public class ServiceRecordService {
 			        ),
 			        null));
 
-	        if (part.getQuantity() < p.getQuantity()) {
-	            throw new RuntimeException("Not enough parts in stock");
+	        if (part.getQuantityInStock() < p.getQuantity()) {
+	            throw new ErrorResponseException(HttpStatus.NOT_ACCEPTABLE,
+						ProblemDetail.forStatusAndDetail(
+				                HttpStatus.NOT_ACCEPTABLE,
+				                "Not enough parts: " + part.getPartName() + ". In stock: " + part.getQuantityInStock()
+				        ),
+				        null);
 	        }
 
 	        ServiceRecordPart serviceRecordPart = new ServiceRecordPart();
@@ -263,14 +275,12 @@ public class ServiceRecordService {
 
 	        Part part = ServiceRecordPart.getPart();
 
-	        part.setQuantity(
-	                part.getQuantity() + ServiceRecordPart.getQuantity()
+	        part.setQuantityInStock(
+	                part.getQuantityInStock() + ServiceRecordPart.getQuantity()
 	        );
 
 	        partRepository.save(part);
 	    }
-
-	    serviceRecord.getServiceRecordParts().clear();
 
 	    serviceRecordPartRepository.deleteAll(serviceRecord.getServiceRecordParts());
 	    serviceRecordRepository.delete(serviceRecord);
@@ -285,7 +295,7 @@ public class ServiceRecordService {
 		
 		for(var srp : serviceRecorParts) {
 			Part p = srp.getPart();
-			total += (p.getPrice() * p.getQuantity());
+			total += (p.getPrice() * srp.getQuantity());
 		}
 		
 		return total;
@@ -300,8 +310,9 @@ public class ServiceRecordService {
 			                "Part not found with id: " + parts.getPartId()
 			        ),
 			        null));
+
 		
-			part.setQuantity(part.getQuantity() - parts.getQuantity());
+			part.setQuantityInStock(part.getQuantityInStock() - parts.getQuantity());
 
 			partRepository.save(part);
 		
@@ -320,7 +331,7 @@ public class ServiceRecordService {
 			
 			dto.setPartName(part.getPartName());
 			dto.setPrice(part.getPrice());
-			dto.setQuantity(part.getQuantity());
+			dto.setQuantity(srp.getQuantity());
 			
 			serviceRecordPart.add(dto);
 		}

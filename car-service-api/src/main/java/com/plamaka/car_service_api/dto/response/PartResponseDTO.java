@@ -7,6 +7,8 @@ public class PartResponseDTO {
 	private String partName;
 	
 	private double price;
+	
+	private int quantityInStock;
 
 	public Long getId() {
 		return id;
@@ -30,6 +32,14 @@ public class PartResponseDTO {
 
 	public void setPrice(double price) {
 		this.price = price;
+	}
+
+	public int getQuantityInStock() {
+		return quantityInStock;
+	}
+
+	public void setQuantityInStock(int quantityInStock) {
+		this.quantityInStock = quantityInStock;
 	}
 	
 }

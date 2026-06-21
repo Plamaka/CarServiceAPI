@@ -127,8 +127,12 @@ public class CustomerService {
 		 List<Car> cars = carRepository.findByCustomerId(id);
 
 	    if (!cars.isEmpty()) {
-	        throw new RuntimeException(
-	                "Customer has assigned cars");
+	    	throw new ErrorResponseException(HttpStatus.NOT_ACCEPTABLE,
+					ProblemDetail.forStatusAndDetail(
+			                HttpStatus.NOT_ACCEPTABLE,
+			                "Customer has assigned cars."
+			        ),
+			        null);
 	    }
 	
 	    Customer customer = customerRepository.findById(id)
@@ -209,7 +213,7 @@ public class CustomerService {
 		
 		for(var srp : serviceRecorParts) {
 			Part p = srp.getPart();
-			total += (p.getPrice() * p.getQuantity());
+			total += (p.getPrice() * srp.getQuantity());
 		}
 		
 		return total;
@@ -217,9 +221,8 @@ public class CustomerService {
 	
 	public List<ServiceRecordPartResponseDTO> partsMapper(Long id){
 		
-		List<ServiceRecordPart> serviceRecorParts = serviceRecordPartRepository.findByServiceRecordId(id);
 		
-
+		List<ServiceRecordPart> serviceRecorParts = serviceRecordPartRepository.findByServiceRecordId(id);
 		List<ServiceRecordPartResponseDTO> serviceRecordPart = new ArrayList<ServiceRecordPartResponseDTO>();
 		
 		for(var srp : serviceRecorParts) {
@@ -228,7 +231,7 @@ public class CustomerService {
 			
 			dto.setPartName(part.getPartName());
 			dto.setPrice(part.getPrice());
-			dto.setQuantity(part.getQuantity());
+			dto.setQuantity(srp.getQuantity());
 			
 			serviceRecordPart.add(dto);
 		}

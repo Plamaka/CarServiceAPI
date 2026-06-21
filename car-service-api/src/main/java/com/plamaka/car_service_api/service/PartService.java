@@ -33,6 +33,7 @@ public class PartService {
 			dto.setId(part.getId());
 			dto.setPartName(part.getPartName());
 			dto.setPrice(part.getPrice());
+			dto.setQuantityInStock(part.getQuantityInStock());
 			
 			
 			partDTOs.add(dto);
@@ -53,6 +54,7 @@ public class PartService {
 			dto.setId(part.getId());
 			dto.setPartName(part.getPartName());
 			dto.setPrice(part.getPrice());
+			dto.setQuantityInStock(part.getQuantityInStock());
 			
 			
 			partDTOs.add(dto);
@@ -63,7 +65,7 @@ public class PartService {
 	
 	public List<PartResponseDTO> getAvailableParts(int quantity){
 
-		List<Part> parts = partRepository.findByQuantityGreaterThanEqual(quantity);
+		List<Part> parts = partRepository.findByQuantityInStockGreaterThanEqual(quantity);
 		
 		List<PartResponseDTO> partDTOs = new ArrayList<>();
 		
@@ -73,6 +75,7 @@ public class PartService {
 			dto.setId(part.getId());
 			dto.setPartName(part.getPartName());
 			dto.setPrice(part.getPrice());
+			dto.setQuantityInStock(part.getQuantityInStock());
 			
 			
 			partDTOs.add(dto);
@@ -83,7 +86,7 @@ public class PartService {
 	
 	public List<PartResponseDTO> getPartsOutOfStock(int quantity){
 
-		List<Part> parts = partRepository.findByQuantity(quantity);
+		List<Part> parts = partRepository.findByQuantityInStock(quantity);
 		
 		List<PartResponseDTO> partDTOs = new ArrayList<>();
 		
@@ -106,7 +109,7 @@ public class PartService {
 		Part part = new Part(
 				dto.getPartName(),
 				dto.getPrice(),
-				dto.getQuantity());
+				dto.getQuantityInStock());
 		 
 		Part savedPart = partRepository.save(part);
 		
@@ -115,6 +118,7 @@ public class PartService {
 		responseDto.setId(savedPart.getId());
 		responseDto.setPartName(savedPart.getPartName());
 		responseDto.setPrice(savedPart.getPrice());
+		responseDto.setQuantityInStock(savedPart.getQuantityInStock());
 		
 		return responseDto;		
 	}
@@ -131,7 +135,7 @@ public class PartService {
 		
 		part.setPartName(dto.getPartName());
 		part.setPrice(dto.getPrice());
-		part.setQuantity(dto.getQuantity());
+		part.setQuantityInStock(dto.getQuantityInStock());
 		
 		Part savedPart = partRepository.save(part);
 		
@@ -155,9 +159,13 @@ public class PartService {
 		        ),
 		        null));
 		
-		if(part.getQuantity() != 0) {
-			throw new RuntimeException(
-	                "Part has quantity in stock");
+		if(part.getQuantityInStock() != 0) {
+			throw new ErrorResponseException(HttpStatus.NOT_ACCEPTABLE,
+					ProblemDetail.forStatusAndDetail(
+			                HttpStatus.NOT_ACCEPTABLE,
+			                "Part has " + part.getQuantityInStock() + "quantity in stock!"
+			        ),
+			        null);
 		}
 		
 		partRepository.delete(part);

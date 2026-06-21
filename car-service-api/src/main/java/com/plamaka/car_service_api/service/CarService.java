@@ -189,8 +189,12 @@ public class CarService {
 		        serviceRecordRepository.findByCarId(id);
 
 		if (!records.isEmpty()) {
-		    throw new RuntimeException(
-		            "Car has service history");
+			throw new ErrorResponseException(HttpStatus.NOT_ACCEPTABLE,
+					ProblemDetail.forStatusAndDetail(
+			                HttpStatus.NOT_ACCEPTABLE,
+			                "Car has service history"
+			        ),
+			        null);
 		}
 		
 		Car car = carRepository.findById(id)

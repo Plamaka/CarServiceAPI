@@ -11,8 +11,8 @@ public interface PartRepository extends JpaRepository<Part,Long> {
 
 	List<Part> findByPartNameContaining(String name);
 
-    List<Part> findByQuantityGreaterThanEqual(int quantity);
+    List<Part> findByQuantityInStockGreaterThanEqual(int quantityInStock);
     
-    List<Part> findByQuantity(int quantity);
+    List<Part> findByQuantityInStock(int quantityInStock);
     
 }

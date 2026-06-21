@@ -19,7 +19,7 @@ public class Part {
 	
 	private double price;
 	
-	private int quantity;
+	private int quantityInStock;
 	
 	@OneToMany(mappedBy = "part")
 	private List<ServiceRecordPart> ServiceRecordParts;
@@ -28,12 +28,12 @@ public class Part {
 		
 	}
 	
-	public Part(String partName, double price, int quantity) {
+	public Part(String partName, double price, int quantityInStock) {
 		super();
 
 		this.partName = partName;
 		this.price = price;
-		this.quantity = quantity;
+		this.quantityInStock = quantityInStock;
 	}
 
 	public long getId() {
@@ -60,11 +60,11 @@ public class Part {
 		this.price = price;
 	}
 
-	public int getQuantity() {
-		return quantity;
+	public int getQuantityInStock() {
+		return quantityInStock;
 	}
 
-	public void setQuantity(int quantity) {
-		this.quantity = quantity;
+	public void setQuantityInStock(int quantityInStock) {
+		this.quantityInStock = quantityInStock;
 	}
 }
